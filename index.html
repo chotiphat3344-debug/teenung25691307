@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>ระบบประกาศชื่อและยืนยันสิทธิ์</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body { 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Sarabun', sans-serif; 
+            background-color: #fcfcfc;
+            min-height: 100vh;
+        }
+
+        .hidden { display: none !important; }
+        
+        /* หน้าแรก - จัดกลุ่มไว้ด้านบนสุด และกึ่งกลางแนวนอน */
+        #loginSection { 
+            display: flex;
+            flex-direction: column;
+            align-items: center;     /* กึ่งกลางแนวนอน */
+            justify-content: flex-start; /* กองไว้ด้านบน */
+            padding-top: 50px;       /* ระยะห่างจากขอบบน */
+            text-align: center;
+            min-height: 100vh;
+        }
+        
+        .logo-img {
+            width: 300px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        .image-btn { 
+            cursor: pointer; 
+            width: 90%;       
+            max-width: 550px;  
+            height: auto;      
+            border: none;      
+            transition: transform 0.2s;
+            margin-top: 20px;
+        }
+        .image-btn:hover { transform: scale(1.03); }
+
+        /* หน้าหลัก (ตาราง) */
+        #mainSection {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .content-container {
+            width: 100%;
+            max-width: 850px;
+        }
+
+        /* ปุ่มกลับหน้าหลัก */
+        .btn-home {
+            padding: 6px 15px;
+            font-family: 'Sarabun';
+            background-color: #4a4a4a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        /* ตารางขนาดกะทัดรัด */
+        table { border-collapse: collapse; width: auto; margin-top: 10px; font-size: 14px; }
+        th, td { 
+            border: 1px solid #333; 
+            padding: 2px 8px; 
+            text-align: center; 
+            white-space: nowrap; 
+        }
+        
+        th { background-color: #eeeeee; font-weight: bold; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        tr:nth-child(odd) { background-color: #ffffff; }
+
+        .btn-action { 
+            font-family: 'Sarabun'; 
+            font-size: 11px; 
+            cursor: pointer; 
+            padding: 2px 8px; 
+            border-radius: 3px; 
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-confirm { background-color: #e1f5fe; border: 1px solid #01579b; color: #01579b; }
+        .btn-cancel { background-color: #ffebee; border: 1px solid #b71c1c; color: #b71c1c; }
+        
+        .status-text { color: #2e7d32; font-weight: bold; font-size: 12px; margin-right: 5px; }
+        .search-box { margin-bottom: 15px; font-size: 14px; text-align: left; }
+        
+        .input-id { 
+            font-family: 'Sarabun'; 
+            padding: 1px 5px; 
+            width: 95px; 
+            font-size: 12px;
+            border: 1px solid #ccc;
+        }
+
+        .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #444; border-top: 1px solid #ddd; padding-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <div id="loginSection">
+        <img src="ดูรายชื่อ.png" alt="คำอธิบายรูปภาพ" width="700" height="150">
+        <h2 style="font-weight: 700; margin: 10px 0;"><i class="fa-solid fa-graduation-cap"></i> ระบบประกาศชื่อ</h2>
+        <p>กรุณาตรวจสอบรายชื่อและไม่ต้องยืนยันสิทธิ์ </p>
+        <img src="banner-ระบบจองที่นั่งปี2569ม.307-2.png" alt="เข้าสู่ระบบ" class="image-btn" onclick="showPage('mainSection')"><br>
+        <p>web deployment : โชติพัฒน์ หนูเยาว์ </p>
+    </div>
+
+    <div id="mainSection" class="hidden">
+        <div class="content-container">
+            <button class="btn-home" onclick="showPage('loginSection')">
+                <i class="fa-solid fa-house"></i> กลับหน้าหลัก
+            </button>
+            
+            <h3 style="margin: 0 0 15px 0;"><i class="fa-solid fa-list-check"></i> รายชื่อนักเรียนและการยืนยันสิทธิ์</h3>
+            
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i> ค้นหาข้อมูล: 
+                <input type="text" id="searchInput" onkeyup="filterData()" placeholder="ชื่อหรือเลขที่..." style="font-family: 'Sarabun'; width: 200px;">
+            </div>
+
+            <table id="studentTable">
+                <thead>
+                    <tr>
+                        <th>เลขที่</th>
+                        <th>รหัสประจำตัว</th>
+                        <th>คำนำหน้า</th>
+                        <th>ชื่อ - นามสกุล</th>
+                        <th><i class="fa-solid fa-key"></i> กรอกเลขบัตร 13 หลัก</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    </tbody>
+            </table>
+
+            <div class="footer">
+                <p>ข้อมูลโดยคณะกรรมการห้องเรียน</p>
+                <p id="timeDisplay"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const students = [
+            { n: "2", id: "41580", t: "เด็กชาย", name: "จิรภัทร จอมประดิษฐ์" },
+            { n: "6", id: "41584", t: "เด็กชาย", name: "ธีรัตม์ หิรัญกาญจน์" },
+            { n: "8", id: "41586", t: "เด็กชาย", name: "ภูธัต ตราสุวรรณ์" },
+            { n: "9", id: "41587", t: "เด็กชาย", name: "ภูวนัย รักธรรม" },
+            { n: "11", id: "41589", t: "เด็กชาย", name: "ศุภกฤต รักศีล" },
+            { n: "12", id: "41590", t: "เด็กชาย", name: "ศุภณัฐ คงแป้น" },
+            { n: "17", id: "41595", t: "เด็กหญิง", name: "กันตา สาพรเจริญ" },
+            { n: "21", id: "41599", t: "เด็กหญิง", name: "ฐานิดา เพียรดี" },
+            { n: "22", id: "41600", t: "เด็กหญิง", name: "ณัฏฐณิชา ภูธรภักดี" },
+            { n: "23", id: "41601", t: "เด็กหญิง", name: "ณัฐสุดา แป้นถนอม" },
+            { n: "24", id: "41602", t: "เด็กหญิง", name: "ณิชาภัทร คงแก้ว" },
+            { n: "25", id: "41603", t: "เด็กหญิง", name: "ดวงกมล สุวรรณโชติ" },
+            { n: "28", id: "41606", t: "เด็กหญิง", name: "พิชญาภา ขวัญยุบล" },
+            { n: "31", id: "41609", t: "เด็กหญิง", name: "พิรัมภา ภูมิมาศ" },
+            { n: "32", id: "41610", t: "เด็กหญิง", name: "ภัทรมาส บุญเเก้ว" },
+            { n: "33", id: "41611", t: "เด็กหญิง", name: "ภิชญาภา คุ้มสุข" },
+            { n: "34", id: "41612", t: "เด็กหญิง", name: "รวินท์นิภา แกะประจักษ์" },
+            { n: "38", id: "41616", t: "เด็กหญิง", name: "อนันตญา วาจาสุจริต" },
+            { n: "39", id: "41617", t: "เด็กหญิง", name: "อัญรินทร์ วงศ์เดช" },
+            { n: "40", id: "41618", t: "เด็กหญิง", name: "อิศราภรณ์ อาจสมัย" },
+            { n: "41", id: "42619", t: "เด็กหญิง", name: "รัฐปภัสร์ ช่วยหนู" }
+        ];
+
+        // ใช้ LocalStorage เพื่อให้ข้อมูลยืนยันไม่หายเวลาสลับหน้า
+        let confirmedData = JSON.parse(localStorage.getItem('confirmedData')) || {};
+
+        function showPage(pageId) {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('mainSection').classList.add('hidden');
+            document.getElementById(pageId).classList.remove('hidden');
+            
+            if (pageId === 'mainSection') {
+                renderTable(students);
+                document.getElementById('timeDisplay').innerHTML = '<i class="fa-regular fa-clock"></i> ข้อมูล ณ วันที่: ' + new Date().toLocaleString('th-TH');
+            }
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = data.map(s => {
+                const isConfirmed = confirmedData[s.n + s.name];
+                return `
+                <tr>
+                    <td>${s.n}</td>
+                    <td>${s.id}</td>
+                    <td>${s.t}</td>
+                    <td style="text-align:left;">${s.name}</td>
+                    <td>
+                        <span class="status-text">${isConfirmed ? '<i class="fa-solid fa-circle-check"></i> ยืนยันแล้ว (****)' : ''}</span>
+                        <input type="password" id="input-${s.n}" class="input-id" maxlength="13" placeholder="เลขบัตร 13 หลัก">
+                        ${isConfirmed 
+                            ? `<button class="btn-action btn-cancel" onclick="cancelAction('${s.n}', '${s.name}')"><i class="fa-solid fa-rotate-left"></i> ยกเลิก</button>`
+                            : `<button class="btn-action btn-confirm" onclick="confirmAction('${s.n}', '${s.name}')"><i class="fa-solid fa-user-check"></i> ยืนยัน</button>`
+                        }
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function confirmAction(num, name) {
+            const val = document.getElementById(`input-${num}`).value;
+            if (val.length !== 13 || isNaN(val)) return alert("กรุณากรอกเลขบัตรให้ครบ 13 หลัก");
+            if (confirm(`ยืนยันการใช้สิทธิ์สำหรับคุณ ${name}?`)) {
+                confirmedData[num + name] = val;
+                saveData();
+            }
+        }
+
+        function cancelAction(num, name) {
+            const val = document.getElementById(`input-${num}`).value;
+            if (val === confirmedData[num + name]) {
+                if (confirm(`ยกเลิกสิทธิ์ของ ${name}?`)) {
+                    delete confirmedData[num + name];
+                    saveData();
+                }
+            } else {
+                alert("เลขบัตรไม่ถูกต้อง ไม่สามารถยกเลิกได้");
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem('confirmedData', JSON.stringify(confirmedData));
+            filterData();
+        }
+
+        function filterData() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = students.filter(s => 
+                s.n.includes(term) || s.name.includes(term)
+            );
+            renderTable(filtered);
+        }
+    </script>
+</body>
+</html>
